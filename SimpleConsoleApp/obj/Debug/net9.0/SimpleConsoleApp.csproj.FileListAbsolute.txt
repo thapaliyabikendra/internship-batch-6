@@ -1,0 +1,15 @@
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\bin\Debug\net9.0\SimpleConsoleApp.exe
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\bin\Debug\net9.0\SimpleConsoleApp.deps.json
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\bin\Debug\net9.0\SimpleConsoleApp.runtimeconfig.json
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\bin\Debug\net9.0\SimpleConsoleApp.dll
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\bin\Debug\net9.0\SimpleConsoleApp.pdb
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\SimpleConsoleApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\SimpleConsoleApp.AssemblyInfoInputs.cache
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\SimpleConsoleApp.AssemblyInfo.cs
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\SimpleConsoleApp.csproj.CoreCompileInputs.cache
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\SimpleConsoleApp.sourcelink.json
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\SimpleConsoleApp.dll
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\refint\SimpleConsoleApp.dll
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\SimpleConsoleApp.pdb
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\SimpleConsoleApp.genruntimeconfig.cache
+C:\Users\Asus\source\repos\internship-batch-6\SimpleConsoleApp\obj\Debug\net9.0\ref\SimpleConsoleApp.dll
