@@ -1,0 +1,15 @@
+﻿{
+  "applications": {
+    "Asset_Management_App.Web": {
+      "type": "dotnet-project",
+      "launchUrl": "https://localhost:44352",
+      "path": "../../../src/Asset_Management_App.Web/Asset_Management_App.Web.csproj",
+      "kubernetesService": ".*-web$",
+      "healthCheckEndpoint": "/health-status",
+      "healthUiEndpoint": "/health-ui",
+      "execution": {
+        "order": 2
+      }
+    }
+  }
+}

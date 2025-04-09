@@ -1,0 +1,9 @@
+﻿using Asset_Management_App.EntityFrameworkCore;
+using Xunit;
+
+namespace Asset_Management_App.EntityFrameworkCore;
+
+public class Asset_Management_AppEntityFrameworkCoreCollectionFixtureBase : ICollectionFixture<Asset_Management_AppEntityFrameworkCoreFixture>
+{
+
+}
