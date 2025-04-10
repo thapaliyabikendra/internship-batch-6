@@ -1,0 +1,57 @@
+
+Table-Assets
+Column	            Type          		Constraints
+Id	           	    Guid(PK)	
+AssetName		    string				 Unique, Required, MaxLength
+SerialNumber	    string				 Unique, Required
+AssetCategoryId		Guid (FK)	
+DepartmentId		Guid (FK)	
+TagId				Guid (FK)			 Optional
+ReceivedDate		DateTime	
+Status				Enum				 Active / Deactivated
+ApprovalStatus		Enum				 Pending / Approved / Rejected
+CreatedAt			DateTime				UTC
+UpdatedAt			DateTime				UTC
+
+
+Tags
+Column				Type				Constraints
+Id					Guid (PK)	
+MacAddress			string				Unique, Required
+Status				Enum				Active/Deactivated
+ApprovalStatus		Enum				Pending / Approved / Rejected
+CreatedAt			DateTime			UTC
+
+
+Departments
+Column				Type				Constraints
+Id					Guid (PK)	
+Name									string	Unique
+
+Locations
+Column				Type				Constraints
+Id					Guid (PK)	
+Building			string				Required
+Floor				string				Required
+Room				string				Required
+
+AssetLocationHistory
+Column				Type				Constraints
+Id					Guid (PK)	
+AssetId				Guid (FK)	
+LocationId			Guid (FK)	
+MovedAt				DateTime				UTC
+
+
+Users
+Column				Type				Constraints
+Id					Guid (PK)	
+Email				string				Unique
+Password			string				Hashed
+Role				string				Admin/User/Approver
+
+EmailTemplates
+Column				Type				Constraints
+Id					Guid (PK)	
+Type				Enum				Welcome, ApprovalRequest, etc.
+Content				string				Email body template

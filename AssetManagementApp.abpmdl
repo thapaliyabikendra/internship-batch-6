@@ -1,0 +1,101 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.LeptonXLiteTheme": {
+      "version": "4.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.Account": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.Identity": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "9.1.0",
+      "isInstalled": true
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "AssetManagementApp.Application": {
+      "path": "src/AssetManagementApp.Application/AssetManagementApp.Application.abppkg",
+      "folder": "src"
+    },
+    "AssetManagementApp.Application.Tests": {
+      "path": "test/AssetManagementApp.Application.Tests/AssetManagementApp.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "AssetManagementApp.Domain.Shared": {
+      "path": "src/AssetManagementApp.Domain.Shared/AssetManagementApp.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "AssetManagementApp.Application.Contracts": {
+      "path": "src/AssetManagementApp.Application.Contracts/AssetManagementApp.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "AssetManagementApp.HttpApi": {
+      "path": "src/AssetManagementApp.HttpApi/AssetManagementApp.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "AssetManagementApp.HttpApi.Client": {
+      "path": "src/AssetManagementApp.HttpApi.Client/AssetManagementApp.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "AssetManagementApp.EntityFrameworkCore.Tests": {
+      "path": "test/AssetManagementApp.EntityFrameworkCore.Tests/AssetManagementApp.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "AssetManagementApp.EntityFrameworkCore": {
+      "path": "src/AssetManagementApp.EntityFrameworkCore/AssetManagementApp.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "AssetManagementApp.TestBase": {
+      "path": "test/AssetManagementApp.TestBase/AssetManagementApp.TestBase.abppkg",
+      "folder": "test"
+    },
+    "AssetManagementApp.Domain.Tests": {
+      "path": "test/AssetManagementApp.Domain.Tests/AssetManagementApp.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "AssetManagementApp.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/AssetManagementApp.HttpApi.Client.ConsoleTestApp/AssetManagementApp.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "AssetManagementApp.DbMigrator": {
+      "path": "src/AssetManagementApp.DbMigrator/AssetManagementApp.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "AssetManagementApp.HttpApi.Host": {
+      "path": "src/AssetManagementApp.HttpApi.Host/AssetManagementApp.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "AssetManagementApp.Domain": {
+      "path": "src/AssetManagementApp.Domain/AssetManagementApp.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}
