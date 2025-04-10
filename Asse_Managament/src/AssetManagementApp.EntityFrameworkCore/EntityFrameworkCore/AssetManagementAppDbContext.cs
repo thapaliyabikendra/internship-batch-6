@@ -14,7 +14,9 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
-using NuGet.ContentModel;
+using AssetManagementApp.Assets;
+using Swashbuckle.SwaggerUi;
+
 
 namespace AssetManagementApp.EntityFrameworkCore;
 
@@ -67,6 +69,7 @@ public class AssetManagementAppDbContext :
 
     }
 
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -84,11 +87,12 @@ public class AssetManagementAppDbContext :
         builder.ConfigureBlobStoring();
 
         builder.Entity<Asset>(b =>
-        {
-            b.ToTable(AssetManagementAppConsts.DbTablePrefix + "Assets", AssetManagementAppConsts.DbSchema);
-            b.ConfigureByConvention(); // auto configure for the base class props
 
-            b.Property(x => x.).IsRequired().HasMaxLength(256);
+        {
+            b.ToTable("Assets");
+            b.ConfigureByConvention();// auto configure for the base class props
+
+            b.Property(x => x.Asset_Name).IsRequired().HasMaxLength(256);
         });
         
         /* Configure your own tables/entities inside here */

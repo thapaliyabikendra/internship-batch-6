@@ -17,6 +17,7 @@ public class EntityFrameworkCoreAssetManagementAppDbSchemaMigrator
         _serviceProvider = serviceProvider;
     }
 
+
     public async Task MigrateAsync()
     {
         /* We intentionally resolving the AssetManagementAppDbContext
