@@ -1,9 +1,0 @@
-﻿using Xunit;
-
-namespace Asset_Management_App.EntityFrameworkCore;
-
-[CollectionDefinition(Asset_Management_AppTestConsts.CollectionDefinitionName)]
-public class Asset_Management_AppEntityFrameworkCoreCollection : ICollectionFixture<Asset_Management_AppEntityFrameworkCoreFixture>
-{
-
-}
