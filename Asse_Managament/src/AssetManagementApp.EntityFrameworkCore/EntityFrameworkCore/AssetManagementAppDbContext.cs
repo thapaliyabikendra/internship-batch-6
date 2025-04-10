@@ -15,7 +15,8 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using AssetManagementApp.Assets;
-using Swashbuckle.SwaggerUi;
+using System.Linq;
+using AssetManagementApp.Consts;
 
 
 namespace AssetManagementApp.EntityFrameworkCore;
@@ -31,6 +32,9 @@ public class AssetManagementAppDbContext :
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
     public DbSet<Asset> Assets { get; set; }
+    public DbSet<AssetCategory> AssetCategories { get; set; }
+
+
 
 
 
@@ -76,6 +80,8 @@ public class AssetManagementAppDbContext :
 
         /* Include modules to your migration db context */
 
+
+
         builder.ConfigurePermissionManagement();
         builder.ConfigureSettingManagement();
         builder.ConfigureBackgroundJobs();
@@ -86,22 +92,27 @@ public class AssetManagementAppDbContext :
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
 
-        builder.Entity<Asset>(b =>
 
-        {
-            b.ToTable("Assets");
-            b.ConfigureByConvention();// auto configure for the base class props
 
-            b.Property(x => x.Asset_Name).IsRequired().HasMaxLength(256);
-        });
-        
         /* Configure your own tables/entities inside here */
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(AssetManagementAppConsts.DbTablePrefix + "YourEntities", AssetManagementAppConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+        builder.Entity<Asset>(b =>
+        {
+            b.ToTable("Assets",
+                AssetManagementAppConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.AssetName).IsRequired().HasMaxLength(AssetConsts.MaxLength.AssetName);
+        });
+
+        builder.Entity<AssetCategory>(b =>
+        {
+            b.ToTable("AssetCategories",
+                AssetManagementAppConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.DisplayName).IsRequired().HasMaxLength(AssetCategoryConsts.MaxLength.DisplayName);
+            b.Property(x => x.SystemName).IsRequired().HasMaxLength(AssetCategoryConsts.MaxLength.SystemName);
+            b.Property(x => x.IsActive).IsRequired();
+            b.Property(x => x.Description).IsRequired(false).HasMaxLength(AssetCategoryConsts.MaxLength.Description);
+        });
     }
 }

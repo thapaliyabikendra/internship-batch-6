@@ -7,7 +7,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Asset_Management_App.Asset
 {
-    class Asset : AuditedAggregateRoot<Guid>
+    class Assets : AuditedAggregateRoot<Guid>
     {
         public string AssetName { get; set; }
         public string SerialNUmber { get; set; }
@@ -16,6 +16,6 @@ namespace Asset_Management_App.Asset
         public DepartmentsList Department { get; set; }
 
         public DateTime ReceivedDate { get; set; }
+    protected Assets() { }
     }
-
 }

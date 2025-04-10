@@ -17,17 +17,8 @@ public class EntityFrameworkCoreAsset_Management_AppDbSchemaMigrator
         _serviceProvider = serviceProvider;
     }
 
-    public async Task MigrateAsync()
+    public Task MigrateAsync()
     {
-        /* We intentionally resolving the Asset_Management_AppDbContext
-         * from IServiceProvider (instead of directly injecting it)
-         * to properly get the connection string of the current tenant in the
-         * current scope.
-         */
-
-        await _serviceProvider
-            .GetRequiredService<Asset_Management_AppDbContext>()
-            .Database
-            .MigrateAsync();
+        throw new NotImplementedException();
     }
 }
