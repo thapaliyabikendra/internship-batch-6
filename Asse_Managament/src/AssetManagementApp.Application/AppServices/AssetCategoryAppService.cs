@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
@@ -51,4 +52,30 @@ public class AssetCategoryAppService(
             throw new Exception("Error creating asset category", ex);
         }
     }
+
+    // retrives all asset categories
+    public async Task<IEnumerable<CreateAssetCategoryDto>> GetAllAssetCategoriesAsync()
+    {
+        try
+        {
+            var assetCategories = await assetCategoryRepository.GetListAsync();
+
+            var result = assetCategories.Select(x => new CreateAssetCategoryDto
+            {
+                DisplayName = x.DisplayName,
+                SystemName = x.SystemName,
+                IsActive = x.IsActive,
+                Description = x.Description
+            });
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error getting asset categories", ex);
+        }
+    }
+
+
 }
+

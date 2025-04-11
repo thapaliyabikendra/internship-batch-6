@@ -11,4 +11,5 @@ namespace AssetManagementApp.Interfaces;
 public interface IAssetCategoryAppService : IApplicationService 
 {
     Task<CreateAssetCategoryResponseDto>CreateAsync(CreateAssetCategoryDto input);
+    Task<IEnumerable<CreateAssetCategoryDto>> GetAllAssetCategoriesAsync();
 }
