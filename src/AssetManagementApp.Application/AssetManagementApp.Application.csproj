@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Asset\**" />
+    <EmbeddedResource Remove="Asset\**" />
+    <None Remove="Asset\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AssetManagementApp.Domain\AssetManagementApp.Domain.csproj" />
     <ProjectReference Include="..\AssetManagementApp.Application.Contracts\AssetManagementApp.Application.Contracts.csproj" />
   </ItemGroup>
@@ -20,10 +26,6 @@
     <PackageReference Include="Volo.Abp.Account.Application" Version="9.1.0" />
     <PackageReference Include="Volo.Abp.Identity.Application" Version="9.1.0" />
     <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="9.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Asset\" />
   </ItemGroup>
 
 </Project>

@@ -14,6 +14,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using AssetManagementApp.Assets;
 
 namespace AssetManagementApp.EntityFrameworkCore;
 
@@ -26,7 +27,7 @@ public class AssetManagementAppDbContext :
     IIdentityDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-
+    public DbSet<AssetCategory> AssetCategories { get; set; }
 
     #region Entities from the modules
 
@@ -78,10 +79,10 @@ public class AssetManagementAppDbContext :
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
-        
+
         /* Configure your own tables/entities inside here */
 
-        //builder.Entity<YourEntity>(b =>
+        //builder.Entity<AssetCategory>(b =>
         //{
         //    b.ToTable(AssetManagementAppConsts.DbTablePrefix + "YourEntities", AssetManagementAppConsts.DbSchema);
         //    b.ConfigureByConvention(); //auto configure for the base class props
