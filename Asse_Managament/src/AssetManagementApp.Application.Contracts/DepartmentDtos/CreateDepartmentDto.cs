@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Volo.Abp.Domain.Entities.Auditing;
 
-namespace AssetManagementApp.Assets;
+namespace AssetManagementApp.DepartmentDtos;
 
-public class Department : FullAuditedAggregateRoot<Guid>
+public class CreateDepartmentDto
 {
     public string DepartmentName { get; set; }
     public string DepartmentSystemName { get; set; }

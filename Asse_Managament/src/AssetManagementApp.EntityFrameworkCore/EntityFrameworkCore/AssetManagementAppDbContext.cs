@@ -34,6 +34,8 @@ public class AssetManagementAppDbContext :
     public DbSet<Asset> Assets { get; set; }
     public DbSet<AssetCategory> AssetCategories { get; set; }
 
+    public DbSet<Department> Depatments { get; set; }  
+
 
 
 
@@ -113,6 +115,16 @@ public class AssetManagementAppDbContext :
             b.Property(x => x.SystemName).IsRequired().HasMaxLength(AssetCategoryConsts.MaxLength.SystemName);
             b.Property(x => x.IsActive).IsRequired();
             b.Property(x => x.Description).IsRequired(false).HasMaxLength(AssetCategoryConsts.MaxLength.Description);
+        });
+
+        builder.Entity<Department>(b =>
+        {
+            b.ToTable("Departments",
+                AssetManagementAppConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.Property(x => x.DepartmentName).IsRequired().HasMaxLength(DepartmentConsts.MaxLength.DepartmentName);
+            b.Property(x => x.DepartmentSystemName).IsRequired().HasMaxLength(DepartmentConsts.MaxLength.DepartmentSystemName);
+            b.Property(x => x.Description).IsRequired().HasMaxLength(DepartmentConsts.MaxLength.Description);
         });
     }
 }
