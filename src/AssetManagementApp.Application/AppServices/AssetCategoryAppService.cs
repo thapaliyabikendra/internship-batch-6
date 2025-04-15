@@ -1,5 +1,6 @@
 ﻿using AssetManagementApp.Assets;
 using AssetManagementApp.AssetsDtos;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,10 @@ using Volo.Abp.Domain.Repositories;
 
 namespace AssetManagementApp.AppServices;
 
-public class AssetCategoryAppService(
-    IRepository<AssetCategory, Guid> assetCategoryRepository)
+public class AssetCategoryAppService
+    (IRepository<AssetCategory, Guid> assetCategoryRepository)
     : ApplicationService, IAssetCategoryAppService
 {
-    
     public async Task<CreateAssetCategoryResponseDto> CreateAsync(CreateAssetCategoryRequestDto input)
     {
         try
@@ -48,6 +48,7 @@ public class AssetCategoryAppService(
         }
         catch (Exception ex)
         {
+            Logger.LogError(ex, "Error creating asset category");
             throw new Exception("Error creating asset category", ex);
         }
     }
@@ -56,19 +57,18 @@ public class AssetCategoryAppService(
     {
         try
         {
-            var assetCategory = await assetCategoryRepository.AnyAsync(a=>a.Id==id);
-            if (!assetCategory )
+            var assetCategory = await assetCategoryRepository.AnyAsync(a => a.Id == id);
+            if (!assetCategory)
             {
                 throw new Exception("Asset Category not found.");
-
             }
+
             await assetCategoryRepository.DeleteAsync(id);
             return true;
         }
-
-        
         catch (Exception ex)
         {
+            Logger.LogError(ex, "Error retrieving or deleting asset category");
             throw new Exception("Error Reterving Asset Catergory.", ex);
         }
     }
@@ -81,8 +81,8 @@ public class AssetCategoryAppService(
             if (assetCategory is null)
             {
                 throw new UserFriendlyException("Asset category not found.");
-
             }
+
             var result = new AssetCategoryResponseDto()
             {
                 Id = assetCategory.Id,
@@ -91,18 +91,16 @@ public class AssetCategoryAppService(
                 Description = assetCategory.Description
             };
             return result;
-
         }
-        catch (UserFriendlyException) 
-        { 
-            throw; 
+        catch (UserFriendlyException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
+            Logger.LogError(ex, "Error retrieving asset category");
             throw new UserFriendlyException("Error Reterving Asset Catergory.", "500");
         }
-
-
     }
 
     public async Task<bool> UpdateAsync(Guid id, UpdateAssetCatrgoryDto input)
@@ -114,6 +112,7 @@ public class AssetCategoryAppService(
             {
                 throw new UserFriendlyException("Asset Category not found.");
             }
+
             if (input.SystemName.IsNullOrWhiteSpace())
             {
                 throw new UserFriendlyException("SystemName cannot be null");
@@ -128,16 +127,18 @@ public class AssetCategoryAppService(
             assetCategory.IsActive = input.IsActive;
             assetCategory.Description = input.Description?.Trim();
 
-
             await assetCategoryRepository.UpdateAsync(assetCategory);
 
             return true;
         }
-        catch (Exception)
+        catch (UserFriendlyException)
         {
-
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error updating asset category");
             throw new UserFriendlyException("Asset Category not found.");
         }
     }
 }
-

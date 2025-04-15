@@ -14,9 +14,4 @@ public interface IAssetCategoryAppService : IApplicationService
     Task<AssetCategoryResponseDto> GetAsync(Guid Id);
     Task<bool> DeleteAsync(Guid Id);
     Task<bool> UpdateAsync(Guid id, UpdateAssetCatrgoryDto input);
-    //getbyid(Guid id)
-    //getlist
-    //update
-    //delete
-    //updatestatus
 }
