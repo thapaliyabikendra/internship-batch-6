@@ -15,6 +15,7 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using AssetManagementApp.Assets;
+using AssetManagementApp.Entities;
 
 namespace AssetManagementApp.EntityFrameworkCore;
 
@@ -28,6 +29,8 @@ public class AssetManagementAppDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<AssetCategory> AssetCategories { get; set; }
+    public DbSet<Department> Departments { get; set; }
+    
 
     #region Entities from the modules
 

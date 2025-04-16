@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Users;
 
 namespace AssetManagementApp.AppServices;
 
@@ -20,10 +21,8 @@ public class AssetCategoryAppService
     {
         try
         {
-            if (input.SystemName.IsNullOrWhiteSpace())
-            {
-                throw new Exception("SystemName cannot be null");
-            }
+            Logger.LogInformation("Creating asset category with name: {AssetCategoryName}", input.DisplayName);
+
             if (input.DisplayName.IsNullOrWhiteSpace())
             {
                 throw new Exception("DisplayName cannot be null");
