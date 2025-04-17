@@ -100,6 +100,17 @@ public class AssetManagementAppDbContext :
 
         builder.Entity<Asset>(b =>
         {
+            // Ddefining relationships (many to one, one to one and many to many)
+
+            //b.HasOne(a => a.CategoryName)
+            //.WithMany(a => a.Asset)
+            //.HasForeignKey(a => a.CategoryId);
+
+            //// for departments
+            //b.HasOne(x => x.OwnByDepartment)
+            //.WithMany(x => x.Asset)
+            //.HasForeignKey(x => x.DeprtmentId);
+
             b.ToTable("Assets",
                 AssetManagementAppConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
@@ -108,6 +119,7 @@ public class AssetManagementAppDbContext :
 
         builder.Entity<AssetCategory>(b =>
         {
+
             b.ToTable("AssetCategories",
                 AssetManagementAppConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
@@ -124,7 +136,7 @@ public class AssetManagementAppDbContext :
             b.ConfigureByConvention();
             b.Property(x => x.DepartmentName).IsRequired().HasMaxLength(DepartmentConsts.MaxLength.DepartmentName);
             b.Property(x => x.DepartmentSystemName).IsRequired().HasMaxLength(DepartmentConsts.MaxLength.DepartmentSystemName);
-            b.Property(x => x.Description).IsRequired().HasMaxLength(DepartmentConsts.MaxLength.Description);
+            b.Property(x => x.Description).HasMaxLength(DepartmentConsts.MaxLength.Description);
         });
     }
 }

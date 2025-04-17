@@ -11,25 +11,33 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Caching;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Validation.Localization;
 
 namespace AssetManagementApp.AppServices;
 
 public class AssetCategoryAppService(ILogger<AssetCategoryAppService> logger,
-    IRepository<AssetCategory, Guid> assetCategoryRepository)
+    IRepository<AssetCategory, Guid> assetCategoryRepository, IDistributedCache<CreateAssetCategoryDto> cache)
     : ApplicationService, IAssetCategoryAppService
 {
     public async Task<CreateAssetCategoryResponseDto> CreateAsync(CreateAssetCategoryDto input)
     {
+       
+
         try
         {
+            logger.LogDebug("Creating asset category");
+
             if(input.SystemName.IsNullOrWhiteSpace())
             {
-                throw new Exception("SystemName cannot be null");
+                logger.LogInformation("Creating asset category with name: {AssetCategoryName}", input.SystemName);
+                throw new Exception("SystemName cannot be Empty!");
             }
+
             if (input.DisplayName.IsNullOrWhiteSpace())
             {
-                throw new Exception("DisplayName cannot be null");
+                throw new Exception("DisplayName cannot be Empty1");
             }
 
             var assetCategory = new AssetCategory()
@@ -55,11 +63,25 @@ public class AssetCategoryAppService(ILogger<AssetCategoryAppService> logger,
         }
     }
 
-    // retrives all asset categories
+
+    /// <summary>
+    /// Retrieves all asset categories
+    /// </summary>
+    /// <returns>List of Categories</returns>
+    /// <exception cref="Exception"></exception>
     public async Task<IEnumerable<CreateAssetCategoryDto>> GetAllAssetCategoriesAsync()
     {
         try
         {
+            //var cahceKey = "AssetCategory";
+
+            //var cacheData = await cache.GetAsync(cahceKey);
+
+            //if(cacheData != null)
+            //{
+            //    return (IEnumerable<CreateAssetCategoryDto>)cacheData;
+            //}
+
             var assetCategories = await assetCategoryRepository.GetListAsync();
 
             var result = assetCategories.Select(x => new CreateAssetCategoryDto
@@ -103,37 +125,38 @@ public class AssetCategoryAppService(ILogger<AssetCategoryAppService> logger,
     {
         try
         {
-            var assetCategories = await assetCategoryRepository.GetAsync(id);
-            if(assetCategories == null)
-            {
-                throw new Exception("Asset category not found");
-            }
-
             if (input.SystemName.IsNullOrWhiteSpace())
             {
-                throw new Exception("SystemName cannot be null");
+                throw new ArgumentException("SystemName cannot be null or whitespace", nameof(input.SystemName));
             }
+
             if (input.DisplayName.IsNullOrWhiteSpace())
             {
-                throw new Exception("DisplayName cannot be null");
+                throw new ArgumentException("DisplayName cannot be null or whitespace", nameof(input.DisplayName));
             }
-            var result = await assetCategoryRepository.UpdateAsync(assetCategories);
 
-            assetCategories.DisplayName = input.DisplayName.Trim();
-            assetCategories.SystemName = input.SystemName.Trim().ToUpper();
-            assetCategories.IsActive = input.IsActive;
-            assetCategories.Description = input.Description?.Trim();
+            var assetCategory = await assetCategoryRepository.GetAsync(id);
+
+            if (assetCategory == null)
+            {
+                throw new InvalidOperationException($"Asset category with ID '{id}' not found.");
+            }
+
+            assetCategory.DisplayName = input.DisplayName.Trim();
+            assetCategory.SystemName = input.SystemName.Trim().ToUpper();
+            assetCategory.IsActive = input.IsActive;
+            assetCategory.Description = input.Description?.Trim();
+
+            await assetCategoryRepository.UpdateAsync(assetCategory);
 
             return true;
         }
         catch (Exception ex)
         {
-            throw new Exception("Error updating asset category", ex);
+            logger.LogError(ex, "Error updating asset category");
+            throw;
         }
-       
+
+
     }
 }
-
-
-
-//ILogger<CameraAppService> logger,

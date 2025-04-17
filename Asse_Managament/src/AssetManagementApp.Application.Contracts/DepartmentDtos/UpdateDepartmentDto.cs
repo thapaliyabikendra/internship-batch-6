@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AssetManagementApp.DepartmentDtos;
 
-class UpdateDepartmentDto
+public class UpdateDepartmentDto
 {
     public string DepartmentName { get; set; }
     public string DepartmentSystemName { get; set; }

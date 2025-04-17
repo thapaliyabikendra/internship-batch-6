@@ -15,5 +15,5 @@ public interface IDepartmentAppService : IApplicationService
     Task<IEnumerable<CreateDepartmentDto>> GetAllDepartmentAsync();
     Task<CreateDepartmentResponseDto> GetDepartmentAsync(Guid id);
     Task<bool> DeleteDepartmentAsync(Guid id);
-    Task<bool> UpdateDepartmentAsync(Guid id, CreateDepartmentDto input);
+    Task<bool> UpdateDepartmentAsync(Guid id, UpdateDepartmentDto input);
 }

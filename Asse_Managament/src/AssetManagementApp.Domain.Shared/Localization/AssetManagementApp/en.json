@@ -4,6 +4,11 @@
     "AppName": "AssetManagementApp",
     "Menu:Home": "Home",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information visit",
-    "Welcome": "Welcome"
+    "Welcome": "Welcome",
+    "Permissions:AssetManagementApp": "AssetManagementApp",
+    "Permissions:Assets": "Assets Management",
+    "Permissions:Assets.Create": "Creating Assets",
+    "Permissions:Assets.Edit": "Editing Assets",
+    "Permissions:Assets.Delete":"Deleting Assets" 
   }
 }

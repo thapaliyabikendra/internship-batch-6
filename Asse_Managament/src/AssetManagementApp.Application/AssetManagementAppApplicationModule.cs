@@ -6,6 +6,7 @@ using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using Volo.Abp.TenantManagement;
+using Volo.Abp.Caching;
 
 namespace AssetManagementApp;
 
@@ -26,6 +27,11 @@ public class AssetManagementAppApplicationModule : AbpModule
         Configure<AbpAutoMapperOptions>(options =>
         {
             options.AddMaps<AssetManagementAppApplicationModule>();
+        });
+
+        Configure<AbpDistributedCacheOptions>(options =>
+        {
+            options.KeyPrefix = "AssetManagement";
         });
     }
 }

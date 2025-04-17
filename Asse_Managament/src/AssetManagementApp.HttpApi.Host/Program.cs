@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,6 +45,15 @@ public class Program
             var app = builder.Build();
             await app.InitializeApplicationAsync();
             await app.RunAsync();
+
+            // changes are made...
+            //builder.Services.AddEndpointsApiExplorer();
+            //builder.Services.AddSwaggerGen(c =>
+            //{
+            //    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            //    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            //});
+
             return 0;
         }
         catch (Exception ex)
@@ -59,5 +70,6 @@ public class Program
         {
             Log.CloseAndFlush();
         }
+
     }
 }

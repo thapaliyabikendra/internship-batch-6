@@ -29,11 +29,11 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
 
             if (input.DepartmentName.IsNullOrWhiteSpace())
             {
-                throw new Exception("DepartmentName cannot be null");
+                throw new Exception("DepartmentName cannot be Empty!");
             }
             if (input.DepartmentSystemName.IsNullOrWhiteSpace())
             {
-                throw new Exception("DepartmentSystemName cannot be null");
+                throw new Exception("DepartmentSystemName cannot be Empty");
             }
             var department = new Department()
             {
@@ -66,7 +66,7 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
         {
             if(departmentRepository == null)
             {
-                throw new Exception("Department repository is null");
+                throw new Exception("Department repository is Empty!");
             }
             var getDepartments = await departmentRepository.GetListAsync();
 
@@ -91,31 +91,40 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
 
     public async Task<CreateDepartmentResponseDto> GetDepartmentAsync(Guid id)
     {
-        if (id == Guid.Empty)
+        try
         {
-            throw new ArgumentException("Id cannot be empty", nameof(id));
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("Id cannot be empty", nameof(id));
+            }
+
+            var department = await departmentRepository.GetAsync(id);
+
+            if (department == null)
+            {
+                throw new UserFriendlyException("Department not found.");
+            }
+
+            var departmentDto = new CreateDepartmentResponseDto
+            {
+                DepartmentName = department.DepartmentName,
+                DepartmentSystemName = department.DepartmentSystemName,
+                IsActive = department.IsActive,
+                Description = department.Description
+            };
+
+            return departmentDto;
+
+        }
+        catch (Exception ex)
+        {
+            throw new UserFriendlyException("Exceptions");
         }
 
-        var department = await departmentRepository.GetAsync(id);
-
-        if (department == null)
-        {
-            throw new UserFriendlyException("Department not found.");
-        }
-
-        var departmentDto = new CreateDepartmentResponseDto
-        {
-            DepartmentName = department.DepartmentName,
-            DepartmentSystemName = department.DepartmentSystemName,
-            IsActive = department.IsActive,
-            Description = department.Description
-        };
-
-        return departmentDto;
-
+        
     }
 
-    public async Task<bool> UpdateDepartmentAsync(Guid id, CreateDepartmentDto input)
+    public async Task<bool> UpdateDepartmentAsync(Guid id, UpdateDepartmentDto input)
     {
         try
         {
@@ -126,25 +135,27 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
 
             if (input.DepartmentName.IsNullOrWhiteSpace())
             {
-                throw new Exception("DepartmentName cannot be null");
+                throw new ArgumentException("DepartmentName cannot be Emptys or whitespace");
             }
+
             if (input.DepartmentSystemName.IsNullOrWhiteSpace())
             {
-                throw new Exception("DepartmentSystemName cannot be null");
+                throw new ArgumentException("DepartmentSystemName cannot be Empty or whitespace");
             }
 
             var department = await departmentRepository.GetAsync(id);
+
             if (department == null)
             {
-                throw new Exception("Department not found");
+                throw new Exception($"Department with ID {id} not found.");
             }
 
-            var result = await departmentRepository.UpdateAsync(department);
+            department.DepartmentName = input.DepartmentName.Trim();
+            department.DepartmentSystemName = input.DepartmentSystemName.Trim().ToUpper();
+            department.IsActive = input.IsActive;
+            department.Description = input.Description?.Trim();
 
-            result.DepartmentName = input.DepartmentName.Trim();
-            result.DepartmentSystemName = input.DepartmentSystemName.Trim().ToUpper();
-            result.IsActive = input.IsActive;
-            result.Description = input.Description?.Trim();
+            await departmentRepository.UpdateAsync(department);
 
             return true;
         }
@@ -154,24 +165,32 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
             throw;
         }
 
+
     }
     public async Task<bool> DeleteDepartmentAsync(Guid id)
     {
-        if (id == Guid.Empty)
+        try
         {
-            throw new ArgumentException("Id cannot be empty", nameof(id));
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("Id cannot be empty", nameof(id));
+            }
+
+            var department = await departmentRepository.GetAsync(id);
+
+            if (department == null)
+            {
+                throw new Exception("Department not found");
+            }
+
+            await departmentRepository.DeleteAsync(department);
+
+            return true;
         }
-
-        var department = await departmentRepository.GetAsync(id);
-
-        if (department == null)
+        catch (Exception ex)
         {
-            throw new Exception("Department not found");
+            logger.LogError(ex, "Error deleting department");
+            throw;
         }
-
-        await departmentRepository.DeleteAsync(department);
-
-        return true;
     }
-
 }

@@ -34,7 +34,7 @@ namespace AssetManagementApp.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid>("CategoryNameId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -79,7 +79,7 @@ namespace AssetManagementApp.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<Guid>("OwnDepartmentId")
+                    b.Property<Guid>("OwnByDepartmentId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("ReceivedDate")
@@ -91,9 +91,9 @@ namespace AssetManagementApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoryNameId");
 
-                    b.HasIndex("OwnDepartmentId");
+                    b.HasIndex("OwnByDepartmentId");
 
                     b.ToTable("Assets", (string)null);
                 });
@@ -206,7 +206,6 @@ namespace AssetManagementApp.Migrations
                         .HasColumnType("character varying(128)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
@@ -2060,21 +2059,21 @@ namespace AssetManagementApp.Migrations
 
             modelBuilder.Entity("AssetManagementApp.Assets.Asset", b =>
                 {
-                    b.HasOne("AssetManagementApp.Assets.AssetCategory", "Category")
+                    b.HasOne("AssetManagementApp.Assets.AssetCategory", "CategoryName")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("CategoryNameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AssetManagementApp.Assets.Department", "OwnDepartment")
+                    b.HasOne("AssetManagementApp.Assets.Department", "OwnByDepartment")
                         .WithMany()
-                        .HasForeignKey("OwnDepartmentId")
+                        .HasForeignKey("OwnByDepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.Navigation("CategoryName");
 
-                    b.Navigation("OwnDepartment");
+                    b.Navigation("OwnByDepartment");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>
