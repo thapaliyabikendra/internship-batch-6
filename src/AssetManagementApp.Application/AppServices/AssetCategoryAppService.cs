@@ -76,6 +76,9 @@ public class AssetCategoryAppService
     {
         try
         {
+            //var assetCategor = await assetCategoryRepository.FindAsync(id); this returns null if nothing is found
+            //var assetCateor = await assetCategoryRepository.GetAsync(id); this throws exception if nothing is found
+
             var assetCategory = await assetCategoryRepository.FindAsync(id);
             if (assetCategory is null)
             {
@@ -112,14 +115,7 @@ public class AssetCategoryAppService
                 throw new UserFriendlyException("Asset Category not found.");
             }
 
-            if (input.SystemName.IsNullOrWhiteSpace())
-            {
-                throw new UserFriendlyException("SystemName cannot be null");
-            }
-            if (input.DisplayName.IsNullOrWhiteSpace())
-            {
-                throw new UserFriendlyException("DisplayName cannot be null");
-            }
+            ValidateInput(input);
 
             assetCategory.DisplayName = input.DisplayName.Trim();
             assetCategory.SystemName = input.SystemName.Trim().ToUpper();
@@ -138,6 +134,18 @@ public class AssetCategoryAppService
         {
             Logger.LogError(ex, "Error updating asset category");
             throw new UserFriendlyException("Asset Category not found.");
+        }
+    }
+    private void ValidateInput(UpdateAssetCatrgoryDto input)
+    {
+
+        if (input.SystemName.IsNullOrWhiteSpace())
+        {
+            throw new UserFriendlyException("SystemName cannot be null");
+        }
+        if (input.DisplayName.IsNullOrWhiteSpace())
+        {
+            throw new UserFriendlyException("DisplayName cannot be null");
         }
     }
 }
