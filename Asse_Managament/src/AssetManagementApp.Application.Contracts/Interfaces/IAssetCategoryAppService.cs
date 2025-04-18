@@ -1,4 +1,4 @@
-﻿using AssetManagementApp.AssetsDtos;
+﻿using AssetManagementApp.Dtos.AssetsCategoryDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +11,9 @@ namespace AssetManagementApp.Interfaces;
 public interface IAssetCategoryAppService : IApplicationService 
 {
     Task<CreateAssetCategoryResponseDto>CreateAsync(CreateAssetCategoryDto input);
-    Task<IEnumerable<CreateAssetCategoryDto>> GetAllAssetCategoriesAsync();
-    Task<bool> DeleteAssetCategoryAsync(Guid id);
+    Task<IEnumerable<GetAssetCategoryDto>> GetListAsync();
+    Task<GetAssetCategoryDto> GetByIdAsync(Guid id);
+    Task<bool> DeleteAsync(Guid id);
 
-    Task<bool> UpdateAssetCategoryAsync(Guid id, UpdateAssetCategoryDto input);
+    Task<bool> UpdateAsync(Guid id, UpdateAssetCategoryDto input);
 }

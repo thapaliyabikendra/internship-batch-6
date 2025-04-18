@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssetManagementApp.AssetsDtos;
+namespace AssetManagementApp.Dtos.AssetsCategoryDtos;
 
-public class CreateAssetCategoryDto
+public class GetAssetCategoryDto
 {
     public string DisplayName { get; set; }
     public string SystemName { get; set; }
     public bool IsActive { get; set; }
     public string? Description { get; set; }
+
 }

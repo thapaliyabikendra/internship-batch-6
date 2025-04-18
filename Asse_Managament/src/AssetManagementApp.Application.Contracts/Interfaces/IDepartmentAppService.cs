@@ -1,5 +1,5 @@
-﻿using AssetManagementApp.AssetsDtos;
-using AssetManagementApp.DepartmentDtos;
+﻿using AssetManagementApp.Dtos;
+using AssetManagementApp.Dtos.DepartmentDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;

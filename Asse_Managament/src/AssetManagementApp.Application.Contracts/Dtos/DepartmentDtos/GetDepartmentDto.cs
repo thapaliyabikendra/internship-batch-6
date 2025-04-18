@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssetManagementApp.DepartmentDtos;
+namespace AssetManagementApp.Dtos.DepartmentDtos;
 
-public class CreateDepartmentResponseDto
+public class GetDepartmentDto
 {
-    public Guid Id { get; set; }
     public string DepartmentName { get; set; }
     public string DepartmentSystemName { get; set; }
     public bool IsActive { get; set; }
-    public string Description { get; set; }
-
+    public string? Description { get; set; }
 }

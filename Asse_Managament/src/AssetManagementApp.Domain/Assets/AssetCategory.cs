@@ -12,10 +12,9 @@ public class AssetCategory : FullAuditedAggregateRoot<Guid>
 {
     [Required]
      public string DisplayName { get; set; }
+
     [Required]
     public string SystemName { get; set; }
      public bool IsActive { get; set; }
      public string? Description { get; set; }
-
-    public ICollection<Asset> Asset { get; set; }
 }

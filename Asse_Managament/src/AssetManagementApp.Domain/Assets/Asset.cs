@@ -19,15 +19,13 @@ public class Asset : FullAuditedAggregateRoot<Guid>
     [ForeignKey(nameof(AssetCategoryId))]
     public Guid AssetCategoryId { get; set; }
 
-    [Required]
-    public AssetCategory CategoryName { get; set; }
+    public AssetCategory AssetCategory { get; set; }
 
     // foreign key
-    [ForeignKey(nameof(DeprtmentId))]
-    public Guid DeprtmentId { get; set; }
+    [ForeignKey(nameof(DepartmentId))]
+    public Guid DepartmentId { get; set; }
 
-    [Required]
-    public Department OwnByDepartment { get; set; }
+    public Department Department { get; set; }
 
     [DataType(DataType.Date)]
     public DateTime ReceivedDate { get; set; }

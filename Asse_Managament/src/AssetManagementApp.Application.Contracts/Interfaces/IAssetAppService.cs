@@ -1,5 +1,5 @@
-﻿using AssetManagementApp.AssetDtos;
-using AssetManagementApp.AssetsDtos;
+﻿using AssetManagementApp.Dtos;
+using AssetManagementApp.Dtos.AssetDtos;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
@@ -13,9 +13,10 @@ namespace AssetManagementApp.Interfaces;
 public interface IAssetAppService : IApplicationService
 {
     Task<CreateAssetResponseDto> CreateAsync(CreateAssetDto input);
-    Task<IQueryable<CreateAssetDto>> GetAssetByIdAsync(Guid id);
+    Task<GetAssetResponseDto> GetByIdAsync(Guid id);
+    Task<GetAssetResponseDto> GetListAsync();
 
-    Task<bool> UpdateAssetAsync(Guid id, UpdateAssetDto input);
+    Task<bool> UpdateAsync(Guid id, UpdateAssetDto input);
 
-    Task<bool> DeleteAssetAsync(Guid id);
+    Task<bool> DeleteAsync(Guid id);
 }

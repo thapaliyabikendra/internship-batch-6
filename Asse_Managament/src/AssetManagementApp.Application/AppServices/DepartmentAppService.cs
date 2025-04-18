@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AssetManagementApp.DepartmentDtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using AssetManagementApp.Assets;
 using Microsoft.Extensions.Logging;
 using System.Reflection.Metadata.Ecma335;
-using AssetManagementApp.AssetsDtos;
+using AssetManagementApp.Dtos;
 using Volo.Abp;
+using AssetManagementApp.Dtos.DepartmentDtos;
 
 namespace AssetManagementApp.AppServices;
 

@@ -7,7 +7,7 @@
     "Welcome": "Welcome",
     "Permissions:AssetManagementApp": "AssetManagementApp",
     "Permissions:Assets": "Assets Management",
-    "Permissions:Assets.Create": "Creating Assets",
+    "Permissions:Assets.Create": "Create Assets",
     "Permissions:Assets.Edit": "Editing Assets",
     "Permissions:Assets.Delete":"Deleting Assets" 
   }

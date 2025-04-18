@@ -8,7 +8,7 @@ public static class AssetManagementAppPermissions
 
     public static class Assets
     {
-        public const string Default = GroupName + ".Assets";
+        public const string Default = GroupName + ".Assets";    
         public const string Create = Default + ".Create";
         public const string Edit = Default + ".Edit";
         public const string Delete = Default + ".Delete";

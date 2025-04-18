@@ -1,7 +1,7 @@
-using AssetManagementApp.AssetDtos;
 using AssetManagementApp.Assets;
-using AssetManagementApp.AssetsDtos;
-using AssetManagementApp.DepartmentDtos;
+using AssetManagementApp.Dtos.AssetDtos;
+using AssetManagementApp.Dtos.AssetsCategoryDtos;
+using AssetManagementApp.Dtos.DepartmentDtos;
 using AutoMapper;
 using Volo.Abp.Account;
 using Volo.Abp.Caching;
@@ -12,7 +12,9 @@ public class AssetManagementAppApplicationAutoMapperProfile : Profile
 {
     public AssetManagementAppApplicationAutoMapperProfile()
     {
-        CreateMap<AssetCategory, CreateAssetCategoryDto>();
+        CreateMap<CreateAssetCategoryDto, AssetCategory>();
+
+        CreateMap<AssetCategory, AssetCategory>();
 
         CreateMap<Department, CreateDepartmentDto>();
 

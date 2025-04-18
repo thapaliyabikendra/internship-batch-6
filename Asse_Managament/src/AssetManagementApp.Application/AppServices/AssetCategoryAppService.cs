@@ -1,5 +1,5 @@
 ﻿using AssetManagementApp.Assets;
-using AssetManagementApp.AssetsDtos;
+using AssetManagementApp.Dtos.AssetsCategoryDtos;
 using AssetManagementApp.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Caching;
 using Volo.Abp.Domain.Repositories;
@@ -69,7 +70,8 @@ public class AssetCategoryAppService(ILogger<AssetCategoryAppService> logger,
     /// </summary>
     /// <returns>List of Categories</returns>
     /// <exception cref="Exception"></exception>
-    public async Task<IEnumerable<CreateAssetCategoryDto>> GetAllAssetCategoriesAsync()
+    /// 
+    public async Task<IEnumerable<GetAssetCategoryDto>> GetListAsync()
     {
         try
         {
@@ -81,17 +83,17 @@ public class AssetCategoryAppService(ILogger<AssetCategoryAppService> logger,
             //{
             //    return (IEnumerable<CreateAssetCategoryDto>)cacheData;
             //}
-
-            var assetCategories = await assetCategoryRepository.GetListAsync();
-
-            var result = assetCategories.Select(x => new CreateAssetCategoryDto
-            {
-                DisplayName = x.DisplayName,
-                IsActive = x.IsActive,
-                Description = x.Description
-            });
+            var result = (await assetCategoryRepository.GetListAsync())
+                .Select(x => new GetAssetCategoryDto
+                {
+                    DisplayName = x.DisplayName,
+                    IsActive = x.IsActive,
+                    Description = x.Description
+                })
+                .ToList();
 
             return result;
+
         }
         catch (Exception ex)
         {
@@ -99,7 +101,7 @@ public class AssetCategoryAppService(ILogger<AssetCategoryAppService> logger,
         }
     }
 
-    public async Task<bool> DeleteAssetCategoryAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         try
         {
@@ -121,7 +123,7 @@ public class AssetCategoryAppService(ILogger<AssetCategoryAppService> logger,
         }
     }
 
-    public async Task<bool> UpdateAssetCategoryAsync(Guid id, UpdateAssetCategoryDto input)
+    public async Task<bool> UpdateAsync(Guid id, UpdateAssetCategoryDto input)
     {
         try
         {
@@ -157,6 +159,24 @@ public class AssetCategoryAppService(ILogger<AssetCategoryAppService> logger,
             throw;
         }
 
+
+    }
+    public async Task<GetAssetCategoryDto> GetByIdAsync(Guid id)
+    {
+        var assetCategory = await assetCategoryRepository.FindAsync(id);
+        if (assetCategory == null)
+        {
+            throw new UserFriendlyException("Asset category not found");
+        }
+        var result = new GetAssetCategoryDto()
+        {
+            DisplayName = assetCategory.DisplayName,
+            SystemName = assetCategory.SystemName,
+            IsActive = assetCategory.IsActive,
+            Description = assetCategory.Description
+        };
+
+        return result;
 
     }
 }
