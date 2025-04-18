@@ -14,7 +14,7 @@ public class AssetManagementAppApplicationAutoMapperProfile : Profile
     {
         CreateMap<CreateAssetCategoryDto, AssetCategory>();
 
-        CreateMap<AssetCategory, AssetCategory>();
+        CreateMap<AssetCategory, GetAssetCategoryDto>();
 
         CreateMap<Department, CreateDepartmentDto>();
 

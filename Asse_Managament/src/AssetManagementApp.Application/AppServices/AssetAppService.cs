@@ -1,5 +1,6 @@
 ﻿using AssetManagementApp.Assets;
 using AssetManagementApp.Dtos.AssetDtos;
+using AssetManagementApp.Dtos.AssetsCategoryDtos;
 using AssetManagementApp.Interfaces;
 using AssetManagementApp.Permissions;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Entities.Caching;
 using Volo.Abp.Domain.Repositories;
@@ -23,33 +25,39 @@ public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,
     {
         try
         {
-            logger.LogDebug("Starting Asset App Service");
-            // validate inputs
+            Logger.LogInformation("Creating asset with name: {AssetName}", input.AssetName);
+
             if (input.AssetName.IsNullOrWhiteSpace())
             {
-                throw new UserFriendlyException("AssetName cannot be Empty!");
-            }
-           if(input.SerialNumber.IsNullOrWhiteSpace())
-            {
-                throw new UserFriendlyException("SerialNumber cannot be Empty!");
+                throw new Exception("AssetName cannot be empty");
             }
 
-            //create objects for model and remove extr spaces...
-            var asset = new Asset()
+            if (input.SerialNumber.IsNullOrWhiteSpace())
+            {
+                throw new Exception("SerialNumber cannot be empty");
+            }
+
+            var asset = new Asset
             {
                 AssetName = input.AssetName.Trim(),
-                SerialNumber = input.SerialNumber.Trim(),
+                SerialNumber = input.SerialNumber.Trim().ToUpper(),
                 AssetCategoryId = input.AssetCategoryId,
                 DepartmentId = input.DepartmentId,
                 ReceivedDate = input.ReceivedDate
             };
 
-            // now add the above objects into repository or database
+            //var categoryExists = await assetRepository.AnyAsync(x => x.Id == input.AssetCategoryId);
+            //if (!categoryExists)
+            //    throw new UserFriendlyException("Asset Category not found");
+
+            //var departmentExists = await assetRepository.AnyAsync(x => x.Id == input.DepartmentId);
+            //if (!departmentExists)
+            //    throw new UserFriendlyException("Department not found");
+
             await assetRepository.InsertAsync(asset);
 
-            // now check the id and return the above result,
-            var result = new CreateAssetResponseDto()
-            { 
+            var result = new CreateAssetResponseDto
+            {
                 Id = asset.Id
             };
 
@@ -57,8 +65,8 @@ public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error creating asset");
-            throw new UserFriendlyException("An error occurred while creating the asset.");
+            Logger.LogError(ex, "Error creating asset");
+            throw new Exception("Error creating asset", ex);
         }
     }
 
@@ -103,13 +111,76 @@ public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,
         return result;
     }
 
-    public Task<GetAssetResponseDto> GetListAsync()
+    public async Task<PagedResultDto<GetAssetResponseDto>> GetListAsync(GetAssetList input)
     {
-        throw new NotImplementedException();
-    }
+        try
+        {
+            logger.LogDebug("Starting Asset App Service");
+            if (input.MaxResultCount <= 0)
+            {
+                throw new UserFriendlyException("MaxResultCount cannot be less than or equal to 0");
+            }
+            if (input.SkipCount < 0)
+            {
+                throw new UserFriendlyException("SkipCount cannot be less than 0");
+            }
 
-    public Task<bool> UpdateAsync(Guid id, UpdateAssetDto input)
+            var asset = await assetRepository.GetListAsync();
+            if (!string.IsNullOrEmpty(input.Filter))
+            {
+                asset = asset.Where(x => x.AssetName.Contains(input.Filter) || x.SerialNumber.Contains(input.Filter))
+                    .ToList();
+            }
+
+            // now check the total count of the asset
+            var totalCount = asset.Count();
+
+            var items = asset.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+            var result = new List<GetAssetResponseDto>();
+            foreach (var item in items)
+            {
+                result.Add(new GetAssetResponseDto()
+                {
+                    AssetName = item.AssetName,
+                    SerialNumber = item.SerialNumber,
+                    AssetCategoryId = item.AssetCategoryId,
+                    DepartmentId = item.DepartmentId,
+                    ReceivedDate = item.ReceivedDate
+                });
+            }
+            return new PagedResultDto<GetAssetResponseDto>(totalCount, result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error getting asset list");
+            throw new UserFriendlyException("An error occurred while getting the asset list.");
+        }  
+    }
+    public async Task<bool> UpdateAsync(Guid id, UpdateAssetDto input)
     {
-        throw new NotImplementedException();
+        var asset = await assetRepository.FindAsync(id);
+        if (asset == null)
+        {
+            throw new UserFriendlyException("Id not defined");
+        }
+
+        if (input.AssetName.IsNullOrWhiteSpace())
+        {
+            throw new UserFriendlyException("AssetName cannot be Empty!");
+        }
+        if (input.SerialNumber.IsNullOrWhiteSpace())
+        {
+            throw new UserFriendlyException("SerialNumber cannot be Empty!");
+        }
+
+        asset.AssetName = input.AssetName.Trim();
+        asset.SerialNumber = input.SerialNumber.Trim();
+        asset.AssetCategoryId = input.AssetCategoryId;
+        asset.DepartmentId = input.DepartmentId;
+        asset.ReceivedDate = input.ReceivedDate;
+
+        await assetRepository.UpdateAsync(asset);
+
+        return true;
     }
 }
