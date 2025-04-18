@@ -60,7 +60,7 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
 
     }
 
-    public async Task<IEnumerable<CreateDepartmentDto>> GetAllDepartmentAsync()
+    public async Task<IEnumerable<GetDepartmentDto>> GetAllAsync()
     {
         try
         {
@@ -68,9 +68,12 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
             {
                 throw new Exception("Department repository is Empty!");
             }
+            logger.LogDebug("Starting Department App Service");
+            logger.LogInformation("Retrieving all departments");
+
             var getDepartments = await departmentRepository.GetListAsync();
 
-            var departments = getDepartments.Select(x => new CreateDepartmentDto
+            var departments = getDepartments.Select(x => new GetDepartmentDto
             {
                 DepartmentName = x.DepartmentName,
                 DepartmentSystemName = x.DepartmentSystemName,
@@ -89,7 +92,7 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
 
     }
 
-    public async Task<CreateDepartmentResponseDto> GetDepartmentAsync(Guid id)
+    public async Task<GetDepartmentDto> GetByIdAsync(Guid id)
     {
         try
         {
@@ -105,7 +108,7 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
                 throw new UserFriendlyException("Department not found.");
             }
 
-            var departmentDto = new CreateDepartmentResponseDto
+            var departmentDto = new GetDepartmentDto
             {
                 DepartmentName = department.DepartmentName,
                 DepartmentSystemName = department.DepartmentSystemName,
@@ -124,7 +127,7 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
         
     }
 
-    public async Task<bool> UpdateDepartmentAsync(Guid id, UpdateDepartmentDto input)
+    public async Task<bool> UpdateAsync(Guid id, UpdateDepartmentDto input)
     {
         try
         {
@@ -167,7 +170,7 @@ public class DepartmentAppService(ILogger<DepartmentAppService> logger,
 
 
     }
-    public async Task<bool> DeleteDepartmentAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         try
         {

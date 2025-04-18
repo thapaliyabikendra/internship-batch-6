@@ -4,6 +4,7 @@ using AssetManagementApp.Dtos.AssetsCategoryDtos;
 using AssetManagementApp.Interfaces;
 using AssetManagementApp.Permissions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,13 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Caching;
 using Volo.Abp.Domain.Entities.Caching;
 using Volo.Abp.Domain.Repositories;
 
 namespace AssetManagementApp.AppServices;
 [Authorize(AssetManagementAppPermissions.Assets.Default)]
-public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,Guid> assetRepository)
+public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,Guid> assetRepository, IDistributedCache<CreateAssetDto> cache)
     : ApplicationService, IAssetAppService
 {
     public async Task<CreateAssetResponseDto> CreateAsync(CreateAssetDto input)
@@ -93,6 +95,29 @@ public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,
     }
     public async Task<GetAssetResponseDto> GetByIdAsync(Guid id)
     {
+        var cachKey = $"Asset_{id}";
+        var cachedAsset = await cache.GetAsync(cachKey);
+
+        if (cachedAsset != null)
+        {
+            await cache.RemoveAsync(cachKey);
+        }
+
+        // Check if the asset exists
+        var assetExists = await assetRepository.AnyAsync(x => x.Id == id);
+        if (!assetExists)
+        {
+            throw new UserFriendlyException("Asset not found");
+        }
+
+        var assets = await assetRepository.FindAsync(id);
+        var assetDto = ObjectMapper.Map<Asset, CreateAssetDto>(assets);
+
+        // cache for some period of time
+        await cache.SetAsync(cachKey, assetDto, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+        });
         var asset = await assetRepository.FindAsync(id);
         if(asset == null)
         {

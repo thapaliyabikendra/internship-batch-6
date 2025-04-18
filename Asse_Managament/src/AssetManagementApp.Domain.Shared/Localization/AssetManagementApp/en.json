@@ -8,7 +8,7 @@
     "Permissions:AssetManagementApp": "AssetManagementApp",
     "Permissions:Assets": "Assets Management",
     "Permissions:Assets.Create": "Create Assets",
-    "Permissions:Assets.Edit": "Editing Assets",
-    "Permissions:Assets.Delete":"Deleting Assets" 
+    "Permissions:Assets.Edit": "Edit Assets",
+    "Permissions:Assets.Delete":"Delete Assets" 
   }
 }
