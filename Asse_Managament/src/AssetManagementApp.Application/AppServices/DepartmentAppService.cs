@@ -12,8 +12,11 @@ using System.Reflection.Metadata.Ecma335;
 using AssetManagementApp.Dtos;
 using Volo.Abp;
 using AssetManagementApp.Dtos.DepartmentDtos;
+using AssetManagementApp.Permissions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AssetManagementApp.AppServices;
+[Authorize(AssetManagementAppPermissions.Assets.Default)]
 
 public class DepartmentAppService(ILogger<DepartmentAppService> logger, 
     IRepository<Department, Guid> departmentRepository) 

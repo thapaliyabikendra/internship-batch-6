@@ -9,7 +9,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -20,7 +22,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace AssetManagementApp.AppServices;
 [Authorize(AssetManagementAppPermissions.Assets.Default)]
-public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,Guid> assetRepository, IDistributedCache<CreateAssetDto> cache)
+public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,Guid> assetRepository, IDistributedCache cache)
     : ApplicationService, IAssetAppService
 {
     public async Task<CreateAssetResponseDto> CreateAsync(CreateAssetDto input)
@@ -85,6 +87,11 @@ public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,
 
             await assetRepository.DeleteAsync(id);
 
+            var cacheKey = $"Asset_{id}";
+            await cache.RemoveAsync(cacheKey);
+
+            logger.LogDebug("Asset deleted and cache invalidated.");
+
             return true;
         }
         catch (Exception ex)
@@ -95,92 +102,207 @@ public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,
     }
     public async Task<GetAssetResponseDto> GetByIdAsync(Guid id)
     {
-        var cachKey = $"Asset_{id}";
-        var cachedAsset = await cache.GetAsync(cachKey);
-
-        if (cachedAsset != null)
+        try
         {
-            await cache.RemoveAsync(cachKey);
+            var cacheKey = $"Asset_{id}";
+
+            // Try to get cached byte data
+            var cachedData = await cache.GetAsync(cacheKey);
+            if (cachedData != null)
+            {
+                // Deserialize from byte[] to GetAssetResponseDto
+                var cachedAsset = JsonSerializer.Deserialize<GetAssetResponseDto>(cachedData);
+                return cachedAsset;
+            }
+
+            // Check if asset exists
+            var assetExists = await assetRepository.AnyAsync(x => x.Id == id);
+            if (!assetExists)
+            {
+                throw new UserFriendlyException("Asset not found");
+            }
+
+            // Get the asset from DB
+            var asset = await assetRepository.FindAsync(id);
+            var assetDto = ObjectMapper.Map<Asset, GetAssetResponseDto>(asset);
+
+            // Cache the result
+            var serializedData = JsonSerializer.SerializeToUtf8Bytes(assetDto);
+            await cache.SetAsync(cacheKey, serializedData, new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            });
+
+            // Return the asset DTO
+            return assetDto;
         }
-
-        // Check if the asset exists
-        var assetExists = await assetRepository.AnyAsync(x => x.Id == id);
-        if (!assetExists)
+        catch (Exception ex)
         {
-            throw new UserFriendlyException("Asset not found");
+            logger.LogError(ex, "Error getting asset by ID");
+            throw new UserFriendlyException("An error occurred while getting the asset.");
         }
+        //var cacheKey = $"Asset_{id}";
+        //var cachedData = await cache.GetAsync(cacheKey);
 
-        var assets = await assetRepository.FindAsync(id);
-        var assetDto = ObjectMapper.Map<Asset, CreateAssetDto>(assets);
+        //if (cachedData != null)
+        //{
+        //    var cachedAsset = JsonSerializer.Deserialize<GetAssetResponseDto>(cachedData);
 
-        // cache for some period of time
-        await cache.SetAsync(cachKey, assetDto, new DistributedCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-        });
-        var asset = await assetRepository.FindAsync(id);
-        if(asset == null)
-        {
-            throw new UserFriendlyException("Id not defined");
-        }
+        //    var cachedResponse = new GetAssetResponseDto
+        //    {
+        //        AssetName = cachedAsset.AssetName,
+        //        SerialNumber = cachedAsset.SerialNumber,
+        //        AssetCategoryId = cachedAsset.AssetCategoryId,
+        //        DepartmentId = cachedAsset.DepartmentId,
+        //        ReceivedDate = cachedAsset.ReceivedDate
+        //    };
 
-        var result = new GetAssetResponseDto()
-        {
-            AssetName = asset.AssetName,
-            SerialNumber = asset.SerialNumber,
-            AssetCategoryId = asset.AssetCategoryId,
-            DepartmentId = asset.DepartmentId,
-            ReceivedDate = asset.ReceivedDate
-        };
+        //    return cachedResponse;
+        //}
 
-        return result;
+
+        //var assets = await assetRepository.FindAsync(id);
+        //var assetDto = ObjectMapper.Map<Asset, GetAssetResponseDto>(assets);
+
+        //// Save to cache for next time
+        //var serializedData = JsonSerializer.SerializeToUtf8Bytes(assetDto);
+        //await cache.SetAsync(cacheKey, serializedData, new DistributedCacheEntryOptions
+        //{
+        //    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+        //});
+
+
+        //var asset = await assetRepository.FindAsync(id);
+        //if (asset == null)
+        //{
+        //    throw new UserFriendlyException("Id not defined");
+        //}
+
+        //var result = new GetAssetResponseDto()
+        //{
+        //    AssetName = asset.AssetName,
+        //    SerialNumber = asset.SerialNumber,
+        //    AssetCategoryId = asset.AssetCategoryId,
+        //    DepartmentId = asset.DepartmentId,
+        //    ReceivedDate = asset.ReceivedDate
+        //};
+
+        //return result;
     }
 
+    //public async Task<PagedResultDto<GetAssetResponseDto>> GetListAsync(GetAssetList input)
+    //{
+    //    try
+    //    {
+    //        logger.LogDebug("Starting Asset App Service");
+    //        if (input.MaxResultCount <= 0)
+    //        {
+    //            throw new UserFriendlyException("MaxResultCount cannot be less than or equal to 0");
+    //        }
+    //        if (input.SkipCount < 0)
+    //        {
+    //            throw new UserFriendlyException("SkipCount cannot be less than 0");
+    //        }
+
+    //        var asset = await assetRepository.GetListAsync();
+    //        if (!string.IsNullOrEmpty(input.Filter))
+    //        {
+    //            asset = asset.Where(x => x.AssetName.ToUpper().Contains(input.Filter) || x.SerialNumber.ToUpper().Contains(input.Filter))
+    //                .ToList();
+    //        }
+
+    //        // now check the total count of the asset
+    //        var totalCount = asset.Count();
+
+    //        var items = asset.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+    //        var result = new List<GetAssetResponseDto>();
+    //        foreach (var item in items)
+    //        {
+    //            result.Add(new GetAssetResponseDto()
+    //            {
+    //                AssetName = item.AssetName,
+    //                SerialNumber = item.SerialNumber,
+    //                AssetCategoryId = item.AssetCategoryId,
+    //                DepartmentId = item.DepartmentId,
+    //                ReceivedDate = item.ReceivedDate
+    //            });
+    //        }
+    //        return new PagedResultDto<GetAssetResponseDto>(totalCount, result);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        logger.LogError(ex, "Error getting asset list");
+    //        throw new UserFriendlyException("An error occurred while getting the asset list.");
+    //    }  
+    //}
     public async Task<PagedResultDto<GetAssetResponseDto>> GetListAsync(GetAssetList input)
     {
         try
         {
             logger.LogDebug("Starting Asset App Service");
+
             if (input.MaxResultCount <= 0)
-            {
                 throw new UserFriendlyException("MaxResultCount cannot be less than or equal to 0");
-            }
+
             if (input.SkipCount < 0)
-            {
                 throw new UserFriendlyException("SkipCount cannot be less than 0");
+
+            // Generate unique cache key based on paging + filter
+            var filterKey = input.Filter?.ToUpper() ?? "NO_FILTER";
+            var cacheKey = $"AssetList_{filterKey}_{input.SkipCount}_{input.MaxResultCount}";
+
+            // Try to get from cache
+            var cachedData = await cache.GetAsync(cacheKey);
+            if (cachedData != null)
+            {
+                var cachedList = JsonSerializer.Deserialize<PagedResultDto<GetAssetResponseDto>>(cachedData);
+                return cachedList;
             }
 
+            // Query all
             var asset = await assetRepository.GetListAsync();
-            if (!string.IsNullOrEmpty(input.Filter))
+
+            if (!string.IsNullOrWhiteSpace(input.Filter))
             {
-                asset = asset.Where(x => x.AssetName.Contains(input.Filter) || x.SerialNumber.Contains(input.Filter))
-                    .ToList();
+                asset = asset.Where(x =>
+                    x.AssetName.ToUpper().Contains(input.Filter.ToUpper()) ||
+                    x.SerialNumber.ToUpper().Contains(input.Filter.ToUpper())
+                ).ToList();
             }
 
-            // now check the total count of the asset
             var totalCount = asset.Count();
+            var items = asset
+                .Skip(input.SkipCount)
+                .Take(input.MaxResultCount)
+                .ToList();
 
-            var items = asset.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
-            var result = new List<GetAssetResponseDto>();
-            foreach (var item in items)
+            var result = items.Select(item => new GetAssetResponseDto
             {
-                result.Add(new GetAssetResponseDto()
-                {
-                    AssetName = item.AssetName,
-                    SerialNumber = item.SerialNumber,
-                    AssetCategoryId = item.AssetCategoryId,
-                    DepartmentId = item.DepartmentId,
-                    ReceivedDate = item.ReceivedDate
-                });
-            }
-            return new PagedResultDto<GetAssetResponseDto>(totalCount, result);
+                AssetName = item.AssetName,
+                SerialNumber = item.SerialNumber,
+                AssetCategoryId = item.AssetCategoryId,
+                DepartmentId = item.DepartmentId,
+                ReceivedDate = item.ReceivedDate
+            }).ToList();
+
+            var response = new PagedResultDto<GetAssetResponseDto>(totalCount, result);
+
+            // Cache the result
+            var serializedData = JsonSerializer.SerializeToUtf8Bytes(response);
+            await cache.SetAsync(cacheKey, serializedData, new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            });
+
+            return response;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error getting asset list");
             throw new UserFriendlyException("An error occurred while getting the asset list.");
-        }  
+        }
     }
+
     public async Task<bool> UpdateAsync(Guid id, UpdateAssetDto input)
     {
         var asset = await assetRepository.FindAsync(id);
@@ -207,5 +329,15 @@ public class AssetAppService(ILogger<AssetAppService> logger, IRepository<Asset,
         await assetRepository.UpdateAsync(asset);
 
         return true;
+    }
+
+    // testing redis api
+    public async Task TestRedisCacheAsync()
+    {
+        await cache.SetStringAsync("test-key", "hello redis");
+
+        var value = await cache.GetStringAsync("test-key");
+
+        Console.WriteLine($"Redis returned: {value}"); // Optional logging
     }
 }

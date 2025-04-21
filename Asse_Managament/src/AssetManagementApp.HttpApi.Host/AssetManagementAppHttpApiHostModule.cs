@@ -39,6 +39,9 @@ using Volo.Abp.OpenIddict;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.Studio.Client.AspNetCore;
 using Volo.Abp.Security.Claims;
+using Volo.Abp.Caching;
+using Volo.Abp.BlobStoring;
+using Volo.Abp.BlobStoring.FileSystem;
 
 namespace AssetManagementApp;
 
@@ -52,7 +55,8 @@ namespace AssetManagementApp;
     typeof(AssetManagementAppEntityFrameworkCoreModule),
     typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpSwashbuckleModule),
-    typeof(AbpAspNetCoreSerilogModule)
+    typeof(AbpAspNetCoreSerilogModule),
+    typeof(AbpBlobStoringFileSystemModule)
     )]
 public class AssetManagementAppHttpApiHostModule : AbpModule
 {
@@ -118,6 +122,23 @@ public class AssetManagementAppHttpApiHostModule : AbpModule
         ConfigureSwagger(context, configuration);
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
+
+        context.Services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration["Redis:Configuration"];
+        });
+
+        Configure<AbpBlobStoringOptions>(options =>
+        {
+            options.Containers.Configure("StorageContainer", container =>
+            {
+                container.UseFileSystem(fileSystem =>
+                {
+                    fileSystem.BasePath = @"C:\\AssetBlobs\";
+                });
+            });
+        });
+
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)

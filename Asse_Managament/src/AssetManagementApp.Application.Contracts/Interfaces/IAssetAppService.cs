@@ -20,4 +20,6 @@ public interface IAssetAppService : IApplicationService
     Task<bool> UpdateAsync(Guid id, UpdateAssetDto input);
 
     Task<bool> DeleteAsync(Guid id);
+
+    Task TestRedisCacheAsync();
 }

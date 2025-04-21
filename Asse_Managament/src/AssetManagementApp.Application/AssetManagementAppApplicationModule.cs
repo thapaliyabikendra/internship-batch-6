@@ -7,6 +7,8 @@ using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.Caching;
+using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.BlobStoring;
 
 namespace AssetManagementApp;
 
@@ -33,5 +35,22 @@ public class AssetManagementAppApplicationModule : AbpModule
         {
             options.KeyPrefix = "AssetManagement";
         });
+
+        var configuration = context.Services.GetConfiguration();
+
+        context.Services.Configure<MySettings>(
+            configuration.GetSection("MySettings"));
+
+
+        //Configure<AbpBlobStoringOptions>(options =>
+        //{
+        //    options.Containers.Configure("StorageContainer", container =>
+        //    {
+        //        container.UseFileSystem(fileSystem =>
+        //        {
+        //            fileSystem.BasePath = "blobs"; // relative to the app root
+        //        });
+        //    });
+        //});
     }
 }
