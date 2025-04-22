@@ -42,6 +42,10 @@ using Volo.Abp.Security.Claims;
 using Volo.Abp.Caching;
 using Volo.Abp.BlobStoring;
 using Volo.Abp.BlobStoring.FileSystem;
+using System.Threading.Tasks;
+using AssetManagementApp.Seeders;
+using Volo.Abp.Data;
+using Volo.Abp.Threading;
 
 namespace AssetManagementApp;
 
@@ -138,6 +142,8 @@ public class AssetManagementAppHttpApiHostModule : AbpModule
                 });
             });
         });
+
+
 
     }
 
@@ -243,7 +249,7 @@ public class AssetManagementAppHttpApiHostModule : AbpModule
         context.Services.AddAssetManagementAppHealthChecks();
     }
 
-    public override void OnApplicationInitialization(ApplicationInitializationContext context)
+    public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
     {
         var app = context.GetApplicationBuilder();
         var env = context.GetEnvironment();
@@ -290,5 +296,13 @@ public class AssetManagementAppHttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+
+
+        // bulk import seeder 
+        await context.ServiceProvider
+            .GetRequiredService<IDataSeeder>()
+            .SeedAsync();
+
+
     }
 }

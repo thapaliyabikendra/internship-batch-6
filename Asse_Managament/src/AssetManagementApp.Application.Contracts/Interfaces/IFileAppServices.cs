@@ -11,6 +11,7 @@ namespace AssetManagementApp.Interfaces;
 public interface IFileAppServices : IApplicationService
 {
     Task UploadAsync(UploadFileDto input);
+    Task<List<string>> ListFilesAsync();
     Task<byte[]> DownloadAsync(string fileName);
     Task DeleteAsync(string fileName);
 }

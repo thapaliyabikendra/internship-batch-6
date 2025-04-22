@@ -14,9 +14,9 @@ public class FileAppServices : ApplicationService, IFileAppServices
 {
     private readonly IBlobContainer _blobContainer;
 
-    public FileAppServices(IBlobContainerFactory blobCOntainerfactory)
+    public FileAppServices(IBlobContainerFactory blobContainerfactory)
     {
-        _blobContainer = blobCOntainerfactory.Create("StorageContainer");
+        _blobContainer = blobContainerfactory.Create("StorageContainer");
     }
 
     public async Task UploadAsync(UploadFileDto input)
@@ -35,5 +35,26 @@ public class FileAppServices : ApplicationService, IFileAppServices
     public async Task DeleteAsync(string fileName)
     {
         await _blobContainer.DeleteAsync(fileName);
+    }
+
+    public async Task<List<string>> ListFilesAsync()
+    {
+        var expectedFiles = new List<string>
+    {
+        "BulkImportTemplate.xlsx",
+        "SampleData.xlsx"
+    };
+
+        var existingFiles = new List<string>();
+
+        foreach (var fileName in expectedFiles)
+        {
+            if (await _blobContainer.ExistsAsync(fileName))
+            {
+                existingFiles.Add(fileName);
+            }
+        }
+
+        return existingFiles;
     }
 }
