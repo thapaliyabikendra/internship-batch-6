@@ -30,7 +30,7 @@ public class BulkImportTemplateSeeder : IDataSeedContributor, ITransientDependen
             Directory.GetCurrentDirectory(),
             "wwwroot",
             "templates",
-            "BulkImportTemplate.xlsx"
+            "SampleDatas.xlsx"
         );
 
         // check it the file exists
@@ -40,7 +40,7 @@ public class BulkImportTemplateSeeder : IDataSeedContributor, ITransientDependen
 
             await fileAppService.UploadAsync(new UploadFileDto
             {
-                Name = "BulkImportTemplate.xlsx",
+                Name = "SampleDat.xlsx",
                 FileContent = fileBytes.Result
             });
 

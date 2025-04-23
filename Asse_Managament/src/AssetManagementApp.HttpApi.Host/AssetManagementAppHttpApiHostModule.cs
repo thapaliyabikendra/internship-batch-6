@@ -299,9 +299,9 @@ public class AssetManagementAppHttpApiHostModule : AbpModule
 
 
         // bulk import seeder 
-        await context.ServiceProvider
-            .GetRequiredService<IDataSeeder>()
-            .SeedAsync();
+        //await context.ServiceProvider
+        //    .GetRequiredService<IDataSeeder>()
+        //    .SeedAsync();
 
 
     }

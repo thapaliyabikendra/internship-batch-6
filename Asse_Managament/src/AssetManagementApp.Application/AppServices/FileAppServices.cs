@@ -24,7 +24,7 @@ public class FileAppServices : ApplicationService, IFileAppServices
         var fileName = input.Name;
         var fileContent = input.FileContent;
 
-        await _blobContainer.SaveAsync(fileName, fileContent);
+        //await _blobContainer.SaveAsync(fileName, fileContent);
     }
 
     public async Task<byte[]> DownloadAsync(string fileName)
@@ -41,8 +41,8 @@ public class FileAppServices : ApplicationService, IFileAppServices
     {
         var expectedFiles = new List<string>
     {
-        "BulkImportTemplate.xlsx",
-        "SampleDat.xlsx"
+        "BulkImportTemplates.xlsx",
+        "SampleDatas.xlsx"
     };
 
         var existingFiles = new List<string>();

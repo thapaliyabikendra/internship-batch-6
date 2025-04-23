@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,14 @@ public class TaskItem : FullAuditedAggregateRoot<Guid>
     public bool IsCompleted { get; set; }
 
     public Guid CategoryId { get; set; }
+
+    [ForeignKey(nameof(CategoryId))]
     public Category Category { get; set; }
 
+    // Consider removing this if it's redundant with Title
+    // public string Name { get; set; }
 }
+
 
 //Guid Id
 //string Title(Required, Max Length: 256)

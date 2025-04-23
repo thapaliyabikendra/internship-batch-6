@@ -17,6 +17,7 @@ public class CreateUdateTaskDto
     [MaxLength(512)]
     public string? Description { get; set; }
 
-    public Category CategoryId { get; set; }
+    [Required]
+    public Guid CategoryId { get; set; }
 
 }
