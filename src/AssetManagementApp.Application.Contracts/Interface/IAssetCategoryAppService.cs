@@ -1,4 +1,5 @@
-﻿using AssetManagementApp.AssetsDtos;
+﻿using AssetManagementApp.AssetDtos;
+using AssetManagementApp.AssetsDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ public interface IAssetCategoryAppService : IApplicationService
 {
     Task<CreateAssetCategoryResponseDto> CreateAsync(CreateAssetCategoryRequestDto input);
     Task<AssetCategoryResponseDto> GetAsync(Guid Id);
+    Task<List<AssetCategoryResponseDto>> GetListAsync();
+
     Task<bool> DeleteAsync(Guid Id);
     Task<bool> UpdateAsync(Guid id, UpdateAssetCatrgoryDto input);
 }

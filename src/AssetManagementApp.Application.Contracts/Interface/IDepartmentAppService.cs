@@ -13,6 +13,8 @@ public interface IDepartmentAppService : IApplicationService
 {
     Task<CreateDepartmentResponseDto> CreateAsync(CreateDepartmentRequestDto input);
     Task<DepartmentResponseDto> GetAsync(Guid Id);
+    Task<List<DepartmentResponseDto>> GetListAsync();
+
     Task<bool> DeleteAsync(Guid Id);
     Task<bool> UpdateAsync(Guid id, UpdateDepartmentDto input);
 }

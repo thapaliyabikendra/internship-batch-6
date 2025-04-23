@@ -9,12 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Caching;
 using Volo.Abp.Domain.Repositories;
 
 namespace AssetManagementApp.AppServices;
 
 public class AssetAppService(
-    IRepository<Asset, Guid> assetRepository)
+    IRepository<Asset, Guid> assetRepository,
+    IDistributedCache<List<AssetResponseDto>> _cache)
     : ApplicationService, IAssetAppService
 {
     //Create Logic
@@ -44,7 +46,7 @@ public class AssetAppService(
                 DepartmentId = input.DepartmentId
             };
 
-            await assetRepository.InsertAsync(asset, autoSave: true);
+            await assetRepository.InsertAsync(asset);
 
             var result = new CreateAssetResponseDto
             {
@@ -76,8 +78,8 @@ public class AssetAppService(
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error retrieving or deleting department");
-            throw new Exception("Error Reterving department", ex);
+            Logger.LogError(ex, "Error retrieving or deleting Asset");
+            throw new Exception("Error Reterving Asset", ex);
         }
     }
 
@@ -116,6 +118,38 @@ public class AssetAppService(
             throw new UserFriendlyException("Error retrieving asset", "500");
         }
     }
+    //List 
+    public async Task<List<AssetResponseDto>> GetListAsync()
+    {
+        // check for existing data in cache. if yes, return data from cache. if no, return from db and set in cache
+        var key = "asset-list";   
+        //var key = "userId_assets";   
+        var cachedData = await _cache.GetAsync(key);
+        if (cachedData != null)
+        {
+            return cachedData;
+        }
+        var assets = (await assetRepository.GetQueryableAsync())
+            .Where(x => x.IsActive && !x.IsDeleted)
+            .Select(y=> new AssetResponseDto
+            {
+                Id=y.Id,
+                DisplayName = y.DisplayName,
+                SystemName = y.SystemName,
+                IsActive = y.IsActive,
+                Description=y.Description,
+                AssetCategoryId = y.AssetCategoryId,
+                DepartmentId = y.DepartmentId
+
+            }).ToList();
+
+        await _cache.SetAsync(key, assets);
+
+        return assets;
+
+        // select a.Id, a.DisplayName, a.SystemName, a.IsActive, a.Description from Assets a where a.IsActive = true 
+    }
+
     //Update Logic
 
     public async Task<bool> UpdateAsync(Guid id, UpdateAssetDto input)
