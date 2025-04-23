@@ -15,6 +15,7 @@ using Volo.Abp.Domain.Repositories;
 using Volo.Abp;
 using Volo.Abp.ObjectMapping;
 
+
 namespace TaskManagement.AppServices;
 
 public class TaskAppService : ApplicationService, ITaskAppService
@@ -39,9 +40,7 @@ public class TaskAppService : ApplicationService, ITaskAppService
 
     public async Task<PagedResultDto<TaskDto>> GetListAsync(string? categoryNameFilter, bool? isCompletedFilter, PagedAndSortedResultRequestDto input)
     {
-        var query = await _taskRepository
-     .GetQueryableAsync(); 
-
+        var query = (await _taskRepository.GetQueryableAsync());
         if (!string.IsNullOrEmpty(categoryNameFilter))
         {
             query = query.Where(t => t.Category != null && t.Category.Name.Contains(categoryNameFilter));

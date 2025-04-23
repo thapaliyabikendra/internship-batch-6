@@ -17,10 +17,12 @@ public class TaskManagementApplicationAutoMapperProfile : Profile
 
         // Category -> CategoryDto
         CreateMap<Category, CategoryDto>().ReverseMap();
+        CreateMap<Category, CreateCategoryResponseDto>().ReverseMap();
+        CreateMap<Category, CategoryListResponseDto>().ReverseMap();
 
         // CategoryDto -> Category (for Create)
         CreateMap<CategoryDto, Category>().ReverseMap();
         CreateMap<TaskItem, TaskDto>().ReverseMap();
-        
+
     }
 }

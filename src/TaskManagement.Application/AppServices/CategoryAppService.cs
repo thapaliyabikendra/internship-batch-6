@@ -22,7 +22,7 @@ public class CategoryAppService : ApplicationService, ICategoryAppService
         _categoryRepository = categoryRepository;
     }
 
-    public async Task<CategoryDto> CreateAsync(CategoryDto input)
+    public async Task<CreateCategoryResponseDto> CreateAsync(CategoryDto input)
     {
         var existingCategory = await _categoryRepository.FirstOrDefaultAsync(c => c.Name == input.Name);
         if (existingCategory != null)
@@ -33,12 +33,12 @@ public class CategoryAppService : ApplicationService, ICategoryAppService
         var category = ObjectMapper.Map<CategoryDto,Category>(input);
         await _categoryRepository.InsertAsync(category);
 
-        return ObjectMapper.Map<Category,CategoryDto>(category);
+        return ObjectMapper.Map<Category, CreateCategoryResponseDto>(category);
     }
 
-    public async Task<List<CategoryDto>> GetListAsync()
+    public async Task<List<CategoryListResponseDto>> GetListAsync()
     {
         var categories = await _categoryRepository.GetListAsync();
-        return ObjectMapper.Map<List< Category>,List<CategoryDto>>(categories);
+        return ObjectMapper.Map<List< Category>,List<CategoryListResponseDto>>(categories);
     }
 }

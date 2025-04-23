@@ -10,6 +10,6 @@ namespace TaskManagement.Interface;
 
 public interface ICategoryAppService : IApplicationService
 {
-    Task<CategoryDto> CreateAsync(CategoryDto input);
-    Task<List<CategoryDto>> GetListAsync();
+    Task<CreateCategoryResponseDto> CreateAsync(CategoryDto input);
+    Task<List<CategoryListResponseDto>> GetListAsync();
 }

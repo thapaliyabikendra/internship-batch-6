@@ -9,3 +9,8 @@ public static class TaskManagementConsts
     public const string AdminEmailDefaultValue = IdentityDataSeedContributor.AdminEmailDefaultValue;
     public const string AdminPasswordDefaultValue = IdentityDataSeedContributor.AdminPasswordDefaultValue;
 }
+public class EntityConfigurationConsts
+{
+    public const int TaskItemNameMaxLength = 256;
+    public const int CategoryNameMaxLength = 128;
+}
