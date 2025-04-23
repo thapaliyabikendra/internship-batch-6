@@ -88,6 +88,40 @@ public class TaskManagementDbContext :
             .HasOne(t => t.Category)
             .WithMany()
             .HasForeignKey(t => t.CategoryId)
-            .OnDelete(DeleteBehavior.SetNull); // Or .Cascade depending on the requirement
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Configure TaskItem
+        builder.Entity<TaskItem>(b =>
+        {
+            b.ToTable("AppTaskItems"); // Optional:  table name
+            b.ConfigureByConvention(); // Automatically configure audit fields, etc.
+
+            b.Property(t => t.Title)
+                .IsRequired()
+                .HasMaxLength(256);
+
+            b.Property(t => t.Description)
+                .HasMaxLength(512);
+
+            b.HasOne(t => t.Category)
+                .WithMany()
+                .HasForeignKey(t => t.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull); // If Category deleted, TaskItem.CategoryId will be set to null
+        });
+
+        // Configure Category
+        builder.Entity<Category>(b =>
+        {
+            b.ToTable("AppCategories"); // Optional:  table name
+            b.ConfigureByConvention();
+
+            b.Property(c => c.Name)
+                .IsRequired()
+                .HasMaxLength(128);
+
+            b.HasIndex(c => c.Name)
+                .IsUnique(); // Unique constraint on Name
+        });
+
     }
 }
