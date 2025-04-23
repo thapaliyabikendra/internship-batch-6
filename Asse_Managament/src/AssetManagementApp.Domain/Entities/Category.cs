@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Entities.Auditing;
 
-namespace AssetManagementApp.Dtos.BlobFilesDtos;
+namespace AssetManagementApp.Entities;
 
-public class UploadFileDto
+public class Category : FullAuditedAggregateRoot<Guid>
 {
     public string Name { get; set; }
-    public byte[] FileContent { get; set; }
 }

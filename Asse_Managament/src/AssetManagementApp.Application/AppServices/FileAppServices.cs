@@ -42,7 +42,7 @@ public class FileAppServices : ApplicationService, IFileAppServices
         var expectedFiles = new List<string>
     {
         "BulkImportTemplate.xlsx",
-        "SampleData.xlsx"
+        "SampleDat.xlsx"
     };
 
         var existingFiles = new List<string>();

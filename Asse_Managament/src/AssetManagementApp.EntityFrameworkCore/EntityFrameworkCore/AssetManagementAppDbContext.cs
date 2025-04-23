@@ -17,6 +17,7 @@ using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using AssetManagementApp.Assets;
 using System.Linq;
 using AssetManagementApp.Consts;
+using AssetManagementApp.Entities;
 
 
 namespace AssetManagementApp.EntityFrameworkCore;
@@ -36,6 +37,9 @@ public class AssetManagementAppDbContext :
 
     public DbSet<Department> Depatments { get; set; }  
 
+    public DbSet<TaskItem> TaskItems { get; set; }
+
+    public DbSet<Category> Categories { get; set; }
 
 
 
